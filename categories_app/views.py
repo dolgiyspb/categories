@@ -14,13 +14,26 @@ class CategorySerializer(serializers.Serializer):
 
 
 class CategoryListSerializer(CategorySerializer):
-    children = serializers.ListField(child=RecursiveField(), required=False)
+    children = RecursiveField(many=True, required=False)
 
     def create(self, validated_data):
-        pass
+        to_create_list = [validated_data]
+        root = None
+        while to_create_list:
+            to_create = to_create_list.pop()
+            parent = to_create.get('parent')
+            cat = Category.objects.create(name=to_create['name'])
+            if parent:
+                cat.parents.add(parent)
+                cat.save()
+            if root is None:
+                root = cat
+            children = to_create.get('children', [])
+            for c in children:
+                c['parent'] = cat
+            to_create_list.extend(children)
+        return root
 
-    def _make_category(self, category, parent=None):
-        pass
 
 
 class CategoryDetailSerializer(CategorySerializer):
