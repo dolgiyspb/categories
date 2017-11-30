@@ -5,3 +5,4 @@ WORKDIR /code
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
 ADD . /code/
+RUN git clone https://github.com/vishnubob/wait-for-it.git /wait-for-it
