@@ -4,7 +4,7 @@ from django.db import models
 
 # Create your models here.
 class Category(models.Model):
-    name = models.TextField(unique=True)
+    name = models.CharField(unique=True, max_length=255)
     parents = models.ManyToManyField('self', related_name='children', blank=True, symmetrical=False)
 
     def siblings(self):
